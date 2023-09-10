@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model kabupaten_kota {
+  id                  Int         @id @default(autoincrement())
+  nama_kabupaten_kota String      @db.VarChar(255)
+  suara_paslon1       Int
+  suara_paslon2       Int
+  suara_sah           Int
+  kecamatan           kecamatan[]
+}
+
+model kecamatan {
+  id                Int             @id @default(autoincrement())
+  nama_kecamatan    String          @db.VarChar(255)
+  id_kabupaten_kota Int?
+  suara_paslon1     Int
+  suara_paslon2     Int
+  suara_sah         Int
+  kabupaten_kota    kabupaten_kota? @relation(fields: [id_kabupaten_kota], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "kecamatan_ibfk_1")
+  kelurahan         kelurahan[]
+
+  @@index([id_kabupaten_kota], map: "id_kabupaten_kota")
+}
+
+model kelurahan {
+  id             Int        @id @default(autoincrement())
+  nama_kelurahan String     @db.VarChar(255)
+  id_kecamatan   Int?
+  suara_paslon1  Int
+  suara_paslon2  Int
+  suara_sah      Int
+  kecamatan      kecamatan? @relation(fields: [id_kecamatan], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "kelurahan_ibfk_1")
+
+  @@index([id_kecamatan], map: "id_kecamatan")
+}
