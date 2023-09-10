@@ -1,5 +1,8 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Setup the database (mysql)
+<https://gist.github.com/sultanasf/1a1613864e022fda729e872f0b89e805>
+
 ## Getting Started
 
 First, run the development server:
