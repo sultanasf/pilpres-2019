@@ -20,13 +20,17 @@ export default function Home() {
     opsiKecamatan: [],
     opsiKelurahan: [],
   });
-  const [chartData, setChartData] = useState({
+  const [pieChartData, setPieChartData] = useState({
+    labels: [],
+    datasets: [{}],
+  });
+  const [barChartData, setBarChartData] = useState({
     labels: [],
     datasets: [{}],
   });
 
-  function calculateChartData() {
-    setChartData({
+  function calculatePieChartData() {
+    setPieChartData({
       labels: [
         "(01) Ir. H. JOKO WIDODO - Prof. Dr. (H.C) KH. MA'RUF AMIN",
         "(02) H. PRABOWO SUBIANTO - H. SANDIAGA SALAHUDIN UNO",
@@ -45,6 +49,68 @@ export default function Home() {
         },
       ],
     });
+  }
+
+  function calculateBarChartData() {
+    let chartData = {};
+    if (option.category == 0) {
+      chartData = {
+        labels: data.opsi.map((val) => val.nama_kabupaten_kota),
+        datasets: [
+          {
+            label: "(01) Ir. H. JOKO WIDODO - Prof. Dr. (H.C) KH. MA'RUF AMIN",
+            data: data.opsi.map((val) => val.suara_paslon1),
+          },
+          {
+            label: "(02) H. PRABOWO SUBIANTO - H. SANDIAGA SALAHUDIN UNO",
+            data: data.opsi.map((val) => val.suara_paslon2),
+          },
+        ],
+      };
+    } else if (option.category == 1) {
+      chartData = {
+        labels: data.opsiKecamatan.map((val) => val.nama_kecamatan),
+        datasets: [
+          {
+            label: "(01) Ir. H. JOKO WIDODO - Prof. Dr. (H.C) KH. MA'RUF AMIN",
+            data: data.opsiKecamatan.map((val) => val.suara_paslon1),
+          },
+          {
+            label: "(02) H. PRABOWO SUBIANTO - H. SANDIAGA SALAHUDIN UNO",
+            data: data.opsiKecamatan.map((val) => val.suara_paslon2),
+          },
+        ],
+      };
+    } else if (option.category == 2) {
+      chartData = {
+        labels: data.opsiKelurahan.map((val) => val.nama_kelurahan),
+        datasets: [
+          {
+            label: "(01) Ir. H. JOKO WIDODO - Prof. Dr. (H.C) KH. MA'RUF AMIN",
+            data: data.opsiKelurahan.map((val) => val.suara_paslon1),
+          },
+          {
+            label: "(02) H. PRABOWO SUBIANTO - H. SANDIAGA SALAHUDIN UNO",
+            data: data.opsiKelurahan.map((val) => val.suara_paslon2),
+          },
+        ],
+      };
+    } else if (option.category == 3) {
+      chartData = {
+        labels: data.hasil.map((val) => val.nama_kelurahan),
+        datasets: [
+          {
+            label: "(01) Ir. H. JOKO WIDODO - Prof. Dr. (H.C) KH. MA'RUF AMIN",
+            data: data.hasil.map((val) => val.suara_paslon1),
+          },
+          {
+            label: "(02) H. PRABOWO SUBIANTO - H. SANDIAGA SALAHUDIN UNO",
+            data: data.hasil.map((val) => val.suara_paslon2),
+          },
+        ],
+      };
+    }
+    setBarChartData(chartData);
   }
 
   useEffect(() => {
@@ -66,7 +132,8 @@ export default function Home() {
   }, [option]);
 
   useEffect(() => {
-    calculateChartData();
+    calculatePieChartData();
+    calculateBarChartData();
   }, [data]);
 
   function handleChangeKota(e) {
@@ -154,7 +221,7 @@ export default function Home() {
               ))}
           </div>
           <div className="row mx-auto col-6 mb-5 text-center justify-content-center align-items-center bg-light d-flex">
-            <PieChart chartData={chartData} />
+            <PieChart chartData={pieChartData} />
           </div>
           <div className="row col-11 mb-4 mx-auto justify-content-center align-items-center bg-primary rounded-2 d-flex">
             <div className="col-12">
@@ -270,35 +337,11 @@ export default function Home() {
             </table>
           </div>
           <div className="row mx-auto col-10 mb-5 text-center justify-content-center align-items-center bg-light d-flex">
-            <BarChart
-              chartData={{
-                labels: ["Perolehan Suara"],
-                datasets: [
-                  {
-                    label: chartData.labels[0],
-                    backgroundColor: "rgba(255, 99, 132, 0.6)", // Red color
-                    data: data.hasil.map((val) => val.suara_paslon1),
-                  },
-                  {
-                    label: chartData.labels[1],
-                    backgroundColor: "rgba(54, 162, 235, 0.6)", // Blue color
-                    data: data.hasil.map((val) => val.suara_paslon2),
-                  },
-                  {
-                    label: chartData.labels[2],
-                    backgroundColor: "rgba(54, 80, 800, 0.6)", // Violet color
-                    data: data.hasil.map((val) => {
-                      return (
-                        val.suara_paslon2 + val.suara_paslon1 - val.suara_sah
-                      );
-                    }),
-                  },
-                ],
-              }}
-            />
+            <BarChart chartData={barChartData} />
           </div>
         </div>
       </section>
+      {console.log(data)}
     </>
   );
 }
